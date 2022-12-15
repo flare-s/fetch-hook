@@ -6,26 +6,25 @@ import useFetch from "./hooks/useFetch";
 
 function App() {
   const [tasks, setTasks] = useState([]);
-
-  const transformTasks = (task) => {
-    const loadedTasks = [];
-
-    for (const taskKey in task) {
-      loadedTasks.push({ id: taskKey, text: task[taskKey].text });
-    }
-
-    setTasks(loadedTasks);
-  };
-  const { isLoading, error, fetchRequest } = useFetch(
-    {
-      url: "https://react-custom-hooks-7a2ed-default-rtdb.firebaseio.com/tasks.json",
-    },
-    transformTasks
-  );
+  const { isLoading, error, fetchRequest } = useFetch();
 
   useEffect(() => {
-    fetchRequest();
-  }, []);
+    const transformTasks = (task) => {
+      const loadedTasks = [];
+
+      for (const taskKey in task) {
+        loadedTasks.push({ id: taskKey, text: task[taskKey].text });
+      }
+
+      setTasks(loadedTasks);
+    };
+    fetchRequest(
+      {
+        url: "https://react-custom-hooks-7a2ed-default-rtdb.firebaseio.com/tasks.json",
+      },
+      transformTasks
+    );
+  }, [fetchRequest]);
 
   const taskAddHandler = (task) => {
     setTasks((prevTasks) => prevTasks.concat(task));
